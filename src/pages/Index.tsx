@@ -10,23 +10,16 @@ const Index = () => {
   const [inputText, setInputText] = useState('');
   const [humanizedText, setHumanizedText] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-  const [apiKey, setApiKey] = useState('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');
   const [copied, setCopied] = useState(false);
+  
+  // API key is pre-filled and hidden from users
+  const apiKey = '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';
 
   const humanizeContent = async () => {
     if (!inputText.trim()) {
       toast({
         title: "Input required",
         description: "Please enter some AI content to humanize.",
-        variant: "destructive",
-      });
-      return;
-    }
-
-    if (!apiKey.trim()) {
-      toast({
-        title: "API Key required",
-        description: "Please enter your OpenAI API key.",
         variant: "destructive",
       });
       return;
@@ -86,7 +79,7 @@ Guidelines:
       console.error('Error humanizing content:', error);
       toast({
         title: "Error",
-        description: "Failed to humanize content. Please check your API key and try again.",
+        description: "Failed to humanize content. Please try again.",
         variant: "destructive",
       });
     } finally {
@@ -168,27 +161,6 @@ Guidelines:
           </div>
         </div>
 
-        {/* API Key Input */}
-        <Card className="mb-8 shadow-lg border-0 bg-white/70 backdrop-blur-sm">
-          <CardHeader>
-            <CardTitle className="text-xl text-gray-800">OpenAI API Key</CardTitle>
-            <CardDescription>
-              Enter your OpenAI API key to get started. Your key is stored locally and never sent to our servers.
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="flex gap-4">
-              <input
-                type="password"
-                placeholder="sk-..."
-                value={apiKey}
-                onChange={(e) => setApiKey(e.target.value)}
-                className="flex-1 px-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
-              />
-            </div>
-          </CardContent>
-        </Card>
-
         {/* Main Content */}
         <div className="grid md:grid-cols-2 gap-8">
           {/* Input Section */}
@@ -217,7 +189,7 @@ Example: 'Artificial intelligence represents a significant technological advance
                 </span>
                 <Button 
                   onClick={humanizeContent}
-                  disabled={isLoading || !inputText.trim() || !apiKey.trim()}
+                  disabled={isLoading || !inputText.trim()}
                   className="bg-gradient-to-r from-purple-500 to-blue-500 hover:from-purple-600 hover:to-blue-600 text-white shadow-lg hover:shadow-xl transition-all duration-200"
                 >
                   {isLoading ? (
