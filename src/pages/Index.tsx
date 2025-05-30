@@ -1,36 +1,16 @@
-
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Loader2, Sparkles, Copy, Check, ExternalLink, Key } from "lucide-react";
+import { Loader2, Sparkles, Copy, Check, ExternalLink } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
 
 const Index = () => {
   const [inputText, setInputText] = useState('');
   const [humanizedText, setHumanizedText] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-  const [apiKey, setApiKey] = useState('');
   const [copied, setCopied] = useState(false);
-
-  // Load API key from localStorage on component mount
-  useEffect(() => {
-    const savedApiKey = localStorage.getItem('openai-api-key');
-    if (savedApiKey) {
-      setApiKey(savedApiKey);
-    }
-  }, []);
-
-  // Save API key to localStorage whenever it changes
-  const handleApiKeyChange = (value: string) => {
-    setApiKey(value);
-    if (value.trim()) {
-      localStorage.setItem('openai-api-key', value.trim());
-    } else {
-      localStorage.removeItem('openai-api-key');
-    }
-  };
 
   const humanizeContent = async () => {
     if (!inputText.trim()) {
@@ -42,51 +22,17 @@ const Index = () => {
       return;
     }
 
-    if (!apiKey.trim()) {
-      toast({
-        title: "API Key required",
-        description: "Please enter your OpenAI API key to use this service.",
-        variant: "destructive",
-      });
-      return;
-    }
-
     setIsLoading(true);
     
     try {
-      console.log('Making request to OpenAI API...');
-      const response = await fetch('https://api.openai.com/v1/chat/completions', {
+      console.log('Making request to humanize API...');
+      const response = await fetch('/api/humanize', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${apiKey.trim()}`,
         },
         body: JSON.stringify({
-          model: 'gpt-4o-mini',
-          messages: [
-            {
-              role: 'system',
-              content: `You are an expert content humanizer. Your task is to transform AI-generated text into natural, human-like content while preserving the original meaning and key information. 
-
-Guidelines:
-- Add natural conversational elements and human touches
-- Vary sentence structure and length
-- Include subtle imperfections that humans naturally have
-- Use more casual, relatable language where appropriate
-- Add personal touches like "I think", "in my experience", etc.
-- Make the tone warmer and more engaging
-- Use more easy english words
-- Ensure the content sounds like it was written by a real person
-- Maintain the core message and facts
-- Don't make it overly casual if the original was formal - just more human`
-            },
-            {
-              role: 'user',
-              content: `Please humanize this AI-generated content:\n\n${inputText}`
-            }
-          ],
-          temperature: 0.8,
-          max_tokens: 2000,
+          inputText: inputText.trim()
         }),
       });
 
@@ -94,16 +40,12 @@ Guidelines:
 
       if (!response.ok) {
         const errorData = await response.json();
-        console.error('OpenAI API error:', errorData);
-        
-        if (response.status === 401) {
-          throw new Error('Invalid API key. Please check your OpenAI API key and try again.');
-        }
-        throw new Error(`OpenAI API error: ${response.status}`);
+        console.error('API error:', errorData);
+        throw new Error(errorData.error || `API error: ${response.status}`);
       }
 
       const data = await response.json();
-      const result = data.choices[0]?.message?.content || '';
+      const result = data.humanizedText || '';
       
       setHumanizedText(result);
       toast({
@@ -196,44 +138,6 @@ Guidelines:
           </div>
         </div>
 
-        {/* API Key Input */}
-        <Card className="mb-8 shadow-lg border-0 bg-white/70 backdrop-blur-sm">
-          <CardHeader>
-            <CardTitle className="text-xl text-gray-800 flex items-center gap-2">
-              <Key className="h-5 w-5" />
-              OpenAI API Key
-            </CardTitle>
-            <CardDescription>
-              Enter your OpenAI API key to get started. Your key is stored securely in your browser and never sent to our servers.
-              <br />
-              <a 
-                href="https://platform.openai.com/account/api-keys" 
-                target="_blank" 
-                rel="noopener noreferrer"
-                className="text-blue-600 hover:text-blue-700 underline inline-flex items-center gap-1 mt-1"
-              >
-                Get your API key here <ExternalLink className="h-3 w-3" />
-              </a>
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="flex gap-4">
-              <input
-                type="password"
-                placeholder="sk-proj-..."
-                value={apiKey}
-                onChange={(e) => handleApiKeyChange(e.target.value)}
-                className="flex-1 px-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
-              />
-              {apiKey && (
-                <Badge variant="secondary" className="bg-green-100 text-green-700 self-center">
-                  ✓ Saved
-                </Badge>
-              )}
-            </div>
-          </CardContent>
-        </Card>
-
         {/* Main Content */}
         <div className="grid md:grid-cols-2 gap-8">
           {/* Input Section */}
@@ -262,7 +166,7 @@ Example: 'Artificial intelligence represents a significant technological advance
                 </span>
                 <Button 
                   onClick={humanizeContent}
-                  disabled={isLoading || !inputText.trim() || !apiKey.trim()}
+                  disabled={isLoading || !inputText.trim()}
                   className="bg-gradient-to-r from-purple-500 to-blue-500 hover:from-purple-600 hover:to-blue-600 text-white shadow-lg hover:shadow-xl transition-all duration-200"
                 >
                   {isLoading ? (
