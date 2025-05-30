@@ -56,6 +56,7 @@ Guidelines:
 - Use more casual, relatable language where appropriate
 - Add personal touches like "I think", "in my experience", etc.
 - Make the tone warmer and more engaging
+- Use more easy english words
 - Ensure the content sounds like it was written by a real person
 - Maintain the core message and facts
 - Don't make it overly casual if the original was formal - just more human`
