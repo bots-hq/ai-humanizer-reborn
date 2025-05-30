@@ -1,17 +1,16 @@
-
 import React, { useState } from 'react';
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Loader2, Sparkles, Copy, Check } from "lucide-react";
+import { Loader2, Sparkles, Copy, Check, ExternalLink } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
 
 const Index = () => {
   const [inputText, setInputText] = useState('');
   const [humanizedText, setHumanizedText] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-  const [apiKey, setApiKey] = useState('');
+  const [apiKey, setApiKey] = useState('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');
   const [copied, setCopied] = useState(false);
 
   const humanizeContent = async () => {
@@ -121,16 +120,41 @@ Guidelines:
       <div className="container mx-auto px-4 py-8">
         <div className="text-center mb-12">
           <div className="flex items-center justify-center gap-3 mb-4">
-            <div className="p-3 bg-gradient-to-r from-purple-500 to-blue-500 rounded-xl shadow-lg">
-              <Sparkles className="h-8 w-8 text-white" />
-            </div>
             <h1 className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent">
               AI Humanizer
             </h1>
           </div>
-          <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+          <p className="text-lg text-gray-600 max-w-2xl mx-auto mb-4">
             Transform robotic AI-generated content into natural, human-like text that connects with your audience
           </p>
+          
+          {/* Attribution and Links */}
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-4">
+            <div className="flex items-center gap-2 text-sm text-gray-600">
+              Created by{' '}
+              <a 
+                href="https://linkedin.com/in/salickr" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="text-purple-600 hover:text-purple-700 font-medium underline decoration-2 underline-offset-2 hover:decoration-purple-700 transition-colors"
+              >
+                Salik Riyaz
+              </a>
+            </div>
+            <div className="flex items-center gap-1 text-sm text-gray-600">
+              <span>For more tools, visit</span>
+              <a 
+                href="https://salikriyaz.com" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="text-blue-600 hover:text-blue-700 font-medium underline decoration-2 underline-offset-2 hover:decoration-blue-700 transition-colors inline-flex items-center gap-1"
+              >
+                salikriyaz.com
+                <ExternalLink className="h-3 w-3" />
+              </a>
+            </div>
+          </div>
+
           <div className="flex flex-wrap justify-center gap-2 mt-4">
             <Badge variant="secondary" className="bg-purple-100 text-purple-700">
               Natural Language
